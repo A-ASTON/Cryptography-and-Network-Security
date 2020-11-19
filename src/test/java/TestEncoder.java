@@ -1,11 +1,5 @@
-import decoders.CaesarDecoder;
-import decoders.DESDecoder;
-import decoders.DecoderFactory;
-import decoders.VigenereDecoder;
-import encoders.CaesarEncoder;
-import encoders.DESEncoder;
-import encoders.EncoderFactory;
-import encoders.VigenereEncoder;
+import decoders.*;
+import encoders.*;
 import org.junit.Test;
 import utils.DESUtils;
 
@@ -86,5 +80,28 @@ public class TestEncoder {
         byte[] res = desDecoder.decode(secret, testKey);
         System.out.println("解密密文得到的明文：");
         DESUtils.print(res, 8);
+    }
+
+    @Test
+    public void testRC4() {
+        RC4Encoder
+                rc4Encoder = new RC4Encoder();
+        RC4Decoder
+                rc4Decoder = new RC4Decoder();
+
+        String keyString = "abcde";
+        String plaintext = "ShenZhen University";
+        char[] key = rc4Encoder.generateKey(keyString,256, plaintext.length());
+
+        System.out.println("明文:" + plaintext);
+        System.out.println("密钥:" + keyString);
+
+        System.out.println("密钥流:" + new String(key));
+
+        char[] ciphertext = rc4Encoder.encode(key, plaintext);
+        System.out.println("密文:" + new String(ciphertext));
+
+        char[] newPlaintext = rc4Decoder.decode(ciphertext, key);
+        System.out.println("解密后明文:" + new String(newPlaintext));
     }
 }

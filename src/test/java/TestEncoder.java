@@ -84,19 +84,21 @@ public class TestEncoder {
 
     @Test
     public void testRC4() {
-        RC4Encoder
-                rc4Encoder = new RC4Encoder();
-        RC4Decoder
-                rc4Decoder = new RC4Decoder();
+        RC4Encoder rc4Encoder = new RC4Encoder();
+        RC4Decoder rc4Decoder = new RC4Decoder();
 
         String keyString = "abcde";
         String plaintext = "ShenZhen University";
-        char[] key = rc4Encoder.generateKey(keyString,256, plaintext.length());
+        byte[] key = rc4Encoder.generateKey(keyString,256, plaintext.length());
 
         System.out.println("明文:" + plaintext);
         System.out.println("密钥:" + keyString);
 
-        System.out.println("密钥流:" + new String(key));
+        System.out.print("密钥流:");
+        for (int i = 0; i < key.length; i++) {
+            System.out.print((char) key[i]);
+        }
+        System.out.println();
 
         char[] ciphertext = rc4Encoder.encode(key, plaintext);
         System.out.println("密文:" + new String(ciphertext));

@@ -96,7 +96,7 @@ public class TestEncoder {
 
         System.out.print("密钥流:");
         for (int i = 0; i < key.length; i++) {
-            System.out.print((char) key[i]);
+            System.out.print((char) (key[i] & 0xff));
         }
         System.out.println();
 

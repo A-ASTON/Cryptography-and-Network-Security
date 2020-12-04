@@ -1,5 +1,6 @@
 package utils;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -112,7 +113,75 @@ public class Math {
         return res;
     }
 
-    public static void main(String[] args) {
-        System.out.println("25的本原根有:" + Arrays.toString(primitiveRoot(25).toArray()));
+    public static int inverse(int p, int a) {
+        if (a <= 0 || a >= p) {
+            // a只能是模p的乘法群
+            return 0;
+        }
+        int[] x = new int[]{1, 0, p};
+        int[] y = new int[]{0, 1, a};
+        int q;
+        while (y[2] != 0 && y[2] != 1) {
+            q = x[2] / y[2];
+            int tmp = y[2];
+            y[2] = x[2] % y[2];
+            x[2] = tmp;
+
+            int tmp1 = y[0];
+            int tmp2 = y[1];
+            y[0] = x[0] - q*y[0];
+            y[1] = x[1] - q*y[1];
+            x[0] = tmp1;
+            x[1] = tmp2;
+        }
+        if (y[2] == 1) {
+            return y[1];
+        } else {
+            return 0;
+        }
     }
+
+    private static int x;
+    private static int y;
+    public static int inverse_recursion(int p, int a) {
+        // 递归版扩展欧几里得求逆元,由于java的基本类型没有地址或者引用，所以采用类中设置成员变量以实现
+        // 求p和a的gcd的同时，求a关于1modp的逆元，结果存放在x中
+        // 并且调用完后, ,需要将x、y重新赋值
+        if (a == 0) {
+            x = 1;
+            y = 0;
+            return p;
+        } else {
+            // 递归结束点为：x = 1, y = 0，此时a就是gcd(p, a),由于执行了这么多次的递归函数，所以x和y就相应地计算了这么多次
+            // 最终x存放了a的逆元
+            int res = inverse_recursion(a, p%a);
+            int t = y;
+            y = x - p/a * y;
+            x = t;
+            return res;
+        }
+    }
+
+    public static void main(String[] args) {
+//        System.out.println("25的本原根有:" + Arrays.toString(primitiveRoot(25).toArray()));
+        for (int i = 1; i < 71; i++) {
+            x = 1;
+            y = 0;
+            inverse_recursion(71,i);
+            // 由于逆元的取值范围只能为 1 - 70，所以负数要求取一次模
+            System.out.println(i + "关于1mod71的逆元为（递归）:"+ (y + 71) % 71);
+
+            int r2 = inverse(71,i);
+            System.out.println(i + "关于1mod71的逆元为:"+ (r2 + 71) % 71);
+
+            BigInteger b = new BigInteger(String.valueOf(71));
+            BigInteger a = new BigInteger(String.valueOf(i));
+            System.out.println("使用大数库的逆元运算验证:" + a + "^-1 = " + a.modInverse(b));
+            System.out.println("---------------------------------------------------");
+        }
+
+
+
+    }
+
 }
